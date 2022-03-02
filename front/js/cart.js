@@ -20,15 +20,15 @@ function getCart() {
       );
 
       // Insertion de l'élément "div"
-      let productDiv = document.createElement("div");
-      productArticle.appendChild(productDiv);
-      productDiv.className = "cart__item__img";
-      console.log(produitLocalStorage.imgProduit);
+      let productDivImg = document.createElement("div");
+      productArticle.appendChild(productDivImg);
+      productDivImg.className = "cart__item__img";
+
       // Insertion de l'image
       let productImg = document.createElement("img");
-      productDiv.appendChild(productImg);
+      productDivImg.appendChild(productImg);
       productImg.src = produitLocalStorage[produit].imgProduit;
-      productImg.alt = produitLocalStorage[produit].altProduit;
+      productImg.alt = produitLocalStorage[produit].altImgProduit;
 
       // Insertion de l'élément "div"
       let productItemContent = document.createElement("div");

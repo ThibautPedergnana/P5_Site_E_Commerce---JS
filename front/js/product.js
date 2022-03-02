@@ -79,7 +79,7 @@ function addToCart(article) {
         prixProduit: article.price,
         descriptionProduit: article.description,
         imgProduit: article.imageUrl,
-        altProduit: article.altTxt,
+        altImgProduit: article.altTxt,
       };
       // Initialisation du local storage
       let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
@@ -104,6 +104,12 @@ function addToCart(article) {
         // Si le produit commandé est déjà dans le panier
         if (resultFind) {
           // Si le produit n'est pas dans le panier
+          let newQuantite =
+            parseInt(optionsProduit.quantiteProduit) +
+            parseInt(resultFind.quantiteProduit);
+          resultFind.quantiteProduit = newQuantite;
+          localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+          popupConfirmation();
         } else {
           produitLocalStorage.push(optionsProduit);
           localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
