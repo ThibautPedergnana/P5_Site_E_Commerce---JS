@@ -49,7 +49,6 @@ function getPost(article) {
 
   // Insertion des options de couleurs
   for (let colors of article.colors) {
-    console.table(colors);
     let productColors = document.createElement("option");
     document.querySelector("#colors").appendChild(productColors);
     productColors.value = colors;
@@ -74,13 +73,14 @@ function addToCart(article) {
       let optionsProduit = {
         idProduit: idProduct,
         couleurProduit: choixCouleur,
-        quantiteProduit: Number(choixQuantite),
+        quantiteProduit: +choixQuantite,
         nomProduit: article.name,
         prixProduit: article.price,
         descriptionProduit: article.description,
         imgProduit: article.imageUrl,
         altImgProduit: article.altTxt,
       };
+
       // Initialisation du local storage
       let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
 
@@ -88,7 +88,7 @@ function addToCart(article) {
       const popupConfirmation = () => {
         if (
           window.confirm(`Votre commande de ${choixQuantite} ${article.name} ${choixCouleur} est ajoutée au panier
-        Pour consulter votre panier, cliquez sur OK`)
+      Pour consulter votre panier, cliquez sur OK`)
         ) {
           window.location.href = "cart.html";
         }
@@ -103,13 +103,13 @@ function addToCart(article) {
         );
         // Si le produit commandé est déjà dans le panier
         if (resultFind) {
-          // Si le produit n'est pas dans le panier
           let newQuantite =
             parseInt(optionsProduit.quantiteProduit) +
             parseInt(resultFind.quantiteProduit);
           resultFind.quantiteProduit = newQuantite;
           localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
           popupConfirmation();
+          // Si le produit n'est pas dans le panier
         } else {
           produitLocalStorage.push(optionsProduit);
           localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
@@ -120,7 +120,6 @@ function addToCart(article) {
         produitLocalStorage = [];
         produitLocalStorage.push(optionsProduit);
         localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
-        console.table(produitLocalStorage);
         popupConfirmation();
       }
     }

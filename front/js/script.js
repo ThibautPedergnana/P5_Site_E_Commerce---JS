@@ -10,7 +10,6 @@ async function fillSection() {
   let result = await getArticles()
     .then(function (resultatAPI) {
       const articles = resultatAPI;
-      console.table(articles);
       for (let article in articles) {
         // Insertion de l'élément "a"
         let productLink = document.createElement("a");
