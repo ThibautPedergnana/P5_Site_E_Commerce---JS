@@ -9,6 +9,7 @@ function getCart() {
     positionEmptyCart.innerHTML = emptyCart;
   } else {
     for (let produit in produitLocalStorage) {
+      console.log(produitLocalStorage[produit]);
       // Insertion de l'élément "article"
       let productArticle = document.createElement("article");
       document.querySelector("#cart__items").appendChild(productArticle);
@@ -114,7 +115,6 @@ function getDataProduct(element) {
 function getTotals() {
   // Récupération de la quantité totale
   let elementsQtt = document.getElementsByClassName("itemQuantity");
-  const products = JSON.parse(localStorage.getItem("produit"));
 
   totalPrice = 0;
 
@@ -122,7 +122,7 @@ function getTotals() {
     const datas = getDataProduct(element);
     let quantity = element.value;
 
-    let ourProduct = products.find(
+    let ourProduct = produitLocalStorage.find(
       (product) =>
         product.idProduit === datas.idProduct &&
         product.couleurProduit === datas.idColor
@@ -138,69 +138,64 @@ function getTotals() {
 getCart();
 getTotals();
 
-// Changer la quantité
-const inputsQuantity = document.getElementsByClassName("itemQuantity");
-
+// Ecouter le changement dans l'input
 document.querySelectorAll(".itemQuantity").forEach((item) => {
   item.addEventListener("change", (event) => {
     const datas = getDataProduct(event.target);
 
     const quantity = event.target.value;
 
-    // Récupération de nos produits dans le localStorage
-    const products = JSON.parse(localStorage.getItem("produit"));
-
     // Récupérer l'objet que l'on veut modifier
-    products.forEach((product) => {
+    produitLocalStorage.forEach((product) => {
       if (
         product.idProduit === datas.idProduct &&
         product.couleurProduit === datas.idColor
       ) {
-        product.quantity = +quantity;
+        product.quantiteProduit = +quantity;
         return;
       }
     });
     // Modifier dans le localStorage la quantité de l'objet
-    localStorage.setItem("produit", JSON.stringify(products));
+    localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
 
     getTotals();
   });
 });
 
-// Retirer l'élément dans le dom
-const inputsDelete = document.querySelector(".deleteItem");
-
 // Ecouter le click sur l'input
-inputsDelete &&
-  inputsDelete.addEventListener("click", (event) => {
+document.querySelectorAll(".deleteItem").forEach((item) => {
+  item.addEventListener("click", (event) => {
     const articleElement = event.target.closest("article");
-    const idProduct = articleElement.getAttribute("data-id");
-    const idColor = articleElement.getAttribute("data-color");
-
-    // Récupération de nos produits dans le localStorage
-    const products = JSON.parse(localStorage.getItem("produit"));
+    const datas = getDataProduct(event.target);
 
     // Parcourir l'array récupérer
-    const newProducts = products.filter(
+    const newProducts = produitLocalStorage.filter(
       (product) =>
-        product.idProduit != idProduct && product.couleurProduit != idColor
+        product.idProduit != datas.idProduct &&
+        product.couleurProduit != datas.idColor
     );
 
     localStorage.setItem("produit", JSON.stringify(newProducts));
     articleElement.remove();
+
     //Alerte produit supprimé et refresh
     alert("Ce produit a bien été supprimé du panier");
     location.reload();
   });
+});
 
 // Instruction du formulaire
 function getForm() {
   let form = document.querySelector(".cart__order__form");
 
-  // Syntaxe autorisé
-  let emailRegExp = new RegExp("[a-zA-Z0-9]+@[a-z]+.[a-z]{2,3}");
-  let characterRegExp = new RegExp("[a-zA-Z ]");
-  let addressRegExp = new RegExp("[A-Za-z-0-9]");
+  //Création des expressions régulières
+  let emailRegExp = new RegExp(
+    "^[a-zA-Z0-9.-]+[@]{1}[a-zA-Z0-9.-]+[.]{1}[a-z]{2,10}$"
+  );
+  let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
+  let addressRegExp = new RegExp(
+    "^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+"
+  );
 
   // Validation du prénom
   form.firstName.addEventListener("change", function () {
@@ -210,7 +205,7 @@ function getForm() {
   const validFirstName = function (inputFirstName) {
     let firstNameErrorMsg = inputFirstName.nextElementSibling;
 
-    if (characterRegExp.test(inputFirstName.value)) {
+    if (charRegExp.test(inputFirstName.value)) {
       firstNameErrorMsg.innerHTML = "";
     } else {
       firstNameErrorMsg.innerHTML = "Veuillez renseigner votre prénom.";
@@ -225,7 +220,7 @@ function getForm() {
   const validLastName = function (inputLastName) {
     let lastNameErrorMsg = inputLastName.nextElementSibling;
 
-    if (characterRegExp.test(inputLastName.value)) {
+    if (charRegExp.test(inputLastName.value)) {
       lastNameErrorMsg.innerHTML = "";
     } else {
       lastNameErrorMsg.innerHTML = "Veuillez renseigner votre nom de famille.";
@@ -255,7 +250,7 @@ function getForm() {
   const validCity = function (inputCity) {
     let cityErrorMsg = inputCity.nextElementSibling;
 
-    if (characterRegExp.test(inputCity.value)) {
+    if (charRegExp.test(inputCity.value)) {
       cityErrorMsg.innerHTML = "";
     } else {
       cityErrorMsg.innerHTML = "Veuillez renseigner votre ville.";
@@ -307,22 +302,20 @@ function postForm() {
       products: idProducts,
     };
 
-    const options = {
+    fetch("http://localhost:3000/api/products/order", {
       method: "POST",
-      body: JSON.stringify(order),
       headers: {
         Accept: "application/json",
-        "content-Type": "application/json",
+        "Content-Type": "application/json",
       },
-    };
-
-    fetch("http://localhost:3000/api/products/order", options)
-      .then((response) => response.json())
-      .then((data) => {
+      body: JSON.stringify(order),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((confirm) => {
+        window.location.href = "./confirmation.html?orderId=" + confirm.orderID;
         localStorage.clear();
-        localStorage.setItem("orderId", data.orderId);
-
-        document.location.href = "confirmation.html";
       })
       .catch((err) => {
         alert("Problème avec fetch : " + err.message);

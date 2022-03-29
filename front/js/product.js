@@ -45,7 +45,7 @@ function getPost(article) {
 
   // Modification de la description
   let productDescription = document.getElementById("description");
-  productDescription = article.description;
+  productDescription.innerHTML = article.description;
 
   // Insertion des options de couleurs
   for (let colors of article.colors) {
