@@ -1,6 +1,15 @@
-# Kanap #
+# Projet-05 | Kanap #
+Site e-commerce Kanap en JavaScript
 
-This is the front end and back end server for Project 5 of the Web Developer path.
+Voici le projet 5 de la formation Développeur Web d'Openclassrooms. Dans ce projet, j'ai réalisé la partie fonctionnalité front en JavaScript, l'intégration et le backend étaient fournis. Mon travail était d'intégrer dynamiquement les éléments de l’API dans les différentes pages web avec JavaScript.
+
+## Technologies utilisées
+
+
+
+
+
+This is the front end and back end server for Project 5 of the Web Developer path. 
 
 ### Back end Prerequisites ###
 
