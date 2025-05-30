@@ -1,5 +1,4 @@
-# Projet-05 | Kanap #
-Site e-commerce Kanap en JavaScript
+# Projet-5---Site e-commerce Kanap | JS #
 
 Voici le projet 5 de la formation Développeur Web d'Openclassrooms. Dans ce projet, j'ai réalisé la partie fonctionnalité front en JavaScript, l'intégration et le backend étaient fournis. Mon travail était d'intégrer dynamiquement les éléments de l’API dans les différentes pages web avec JavaScript.
 
